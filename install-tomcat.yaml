@@ -1,0 +1,83 @@
+---
+- name: Install tomcat using ansible
+  hosts: tomcat
+  become: true
+  tasks:
+  - name: install tomcat
+    apt:
+      upgrade: yes
+      update_cache: yes
+    when: ansible_distribution == "Ubuntu"
+  
+  - name: install tomcat
+    yum:
+      update_only: yes
+      update_cache: yes
+    when: ansible_distribution == "CentOS"
+
+  - name: install Java
+    apt:
+      name: default-jdk
+      state: present
+    when: ansible_distribution == "Ubuntu"
+  
+  - name: install Java
+    yum:
+      name: java
+      state: present
+    when: ansible_distribution == "CentOS"
+
+  - name: Download tomcat
+    get_url:
+      # url: https://dlcdn.apache.org/tomcat/tomcat-10/v10.1.36/bin/apache-tomcat-10.1.36.tar.gz
+      url: https://dlcdn.apache.org/tomcat/tomcat-9/v9.0.100/bin/apache-tomcat-9.0.100.tar.gz      
+      dest: /opt
+    when: ansible_distribution == "Ubuntu"
+
+  - name: Download tomcat
+    get_url:
+      url: https://dlcdn.apache.org/tomcat/tomcat-9/v9.0.100/bin/apache-tomcat-9.0.100.tar.gz
+      dest: /opt
+    when: ansible_distribution == "CentOS"
+
+  - name: Extract tomcat
+    unarchive:
+      src: /opt/apache-tomcat-9.0.100.tar.gz
+      dest: /opt
+      remote_src: yes
+    when: ansible_distribution == "Ubuntu"
+
+  - name: Extract tomcat
+    unarchive:
+      src: /opt/apache-tomcat-9.0.100.tar.gz
+      dest: /opt
+      remote_src: yes
+    when: ansible_distribution == "CentOS"
+
+  - name: Configure tomcat user
+    template:
+      src: tomcat-users.xml.j2
+      dest: /opt/apache-tomcat-9.0.100/conf/tomcat-users.xml
+    when: ansible_distribution == "Ubuntu"
+
+  - name: Configure tomcat user
+    template:
+      src: tomcat-users.xml.j2
+      dest: /opt/apache-tomcat-9.0.100/conf/tomcat-users.xml
+    when: ansible_distribution == "CentOS"
+
+  - name: Start tomcat service
+    service:
+      name: tomcat
+      state: started
+      enabled: yes
+    when: ansible_distribution == "Ubuntu"
+  
+  - name: Start tomcat service
+    service:
+      name: tomcat
+      state: started
+      enabled: yes
+    when: ansible_distribution == "CentOS"
+
+
