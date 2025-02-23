@@ -21,7 +21,7 @@
     
   - name: Download & Extract tomcat
     unarchive:
-      src: "{{https://dlcdn.apache.org/tomcat/tomcat-9/v9.0.100/bin/apache-tomcat-9.0.100.tar.gz}}"
+      src: https://dlcdn.apache.org/tomcat/tomcat-9/v9.0.100/bin/apache-tomcat-9.0.100.tar.gz
       dest: /opt
       remote_src: yes
       extra_opts: [--strip-components=1]
