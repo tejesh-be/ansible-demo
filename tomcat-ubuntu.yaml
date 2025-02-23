@@ -3,11 +3,6 @@
   hosts: tomcat
   become: true
   tasks:
-  - name: install tomcat
-    apt:
-      upgrade: yes
-      update_cache: yes
-
   - name: install Java
     apt:
       name: default-jdk
