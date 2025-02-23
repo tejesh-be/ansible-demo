@@ -9,7 +9,7 @@ pipeline{
 
         stage('Execute Ansible') {
             steps {
-                ansiblePlaybook credentialsId: 'ansible_master', disableHostKeyChecking: true, installation: 'Ansible', inventory: 'tomcat.ini', playbook: 'install-tomcat.yaml'
+                ansiblePlaybook credentialsId: 'ansible_master', disableHostKeyChecking: true, installation: 'Ansible', inventory: 'tomcat.ini', playbook: 'tomcat-ubuntu.yaml'
             }
         }
     }

@@ -1,0 +1,70 @@
+---
+- name: Install tomcat using ansible
+  hosts: tomcat
+  become: true
+  tasks:
+  - name: install tomcat
+    apt:
+      upgrade: yes
+      update_cache: yes
+
+  - name: install Java
+    apt:
+      name: default-jdk
+      state: present
+
+  - name: Delete content & directory
+    file:
+      state: absent
+      path: /opt/tomcat
+
+  - name: Create /opt/tomcat directory
+    file:
+      path: /opt/tomcat
+      state: directory
+      mode: 0755
+    
+  - name: Download & Extract tomcat
+    unarchive:
+      src: "{{https://dlcdn.apache.org/tomcat/tomcat-9/v9.0.100/bin/apache-tomcat-9.0.100.tar.gz}}"
+      dest: /opt
+      remote_src: yes
+      extra_opts: [--strip-components=1]
+  
+  - name: Adding tomcat group
+    group:
+      name: tomcat
+
+  - name: Adding tomcat user
+    user:
+      name: tomcat
+      group: tomcat
+      home: /user/share/tomcat
+      createhome: no
+
+  - name: Changing ownership
+    file:
+      path: /opt/tomcat
+      owner: tomcat
+      group: tomcat
+      mode: "u+rwx,g+rx,0=rx"
+      recurse: yes
+      state: directory
+  
+  - name: Copying tomcat service file
+    copy:
+      src: tomcat.service
+      dest: /etc/systemd/system/
+      mode: 0755
+
+  - name: Starting ans enabling tomcat service
+    service:
+      name: tomcat
+      state: restarted
+      enabled: true
+      daemon_reload: true
+
+  
+
+
+
